@@ -4,3 +4,7 @@ Uses M3 25mm screws to close the lid. You can find the power switch here https:/
 
 #### ![Case1](images/Case1.jpg)
 <center><img src="images/Case1.jpg" alt="Case1" width="75%" /></center>
+<br>
+<center><img src="images/Case2.jpg" alt="Case2" width="75%" /></center>
+<br>
+
