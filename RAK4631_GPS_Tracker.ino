@@ -14,7 +14,7 @@ bool newpos = false;
 unsigned char loraData[8];
 int32_t newlat = 0;
 int32_t newlong = 0;
-float VBAT = 3; //Oscar average max voltaje supply for a LiPo battery 3.7 V, play with this value to get a correct one in ADC
+//float VBAT = 3; //Oscar average max voltaje supply for a LiPo battery 3.7 V, play with this value to get a correct one in ADC
 
 // RAK4630 supply two LED
 #ifndef LED_BLUE //Oscar Blue LED
@@ -27,13 +27,13 @@ float VBAT = 3; //Oscar average max voltaje supply for a LiPo battery 3.7 V, pla
 
 bool doOTAA = true;
 #define SCHED_MAX_EVENT_DATA_SIZE APP_TIMER_SCHED_EVENT_DATA_SIZE /**< Maximum size of scheduler events. */
-#define SCHED_QUEUE_SIZE 60                      /**< Maximum number of events in the scheduler queue. */
-#define LORAWAN_DATARATE DR_0                   /*LoRaMac datarates definition, from DR_0 to DR_5*/
-#define LORAWAN_TX_POWER TX_POWER_5                 /*LoRaMac tx power definition, from TX_POWER_0 to TX_POWER_15*/
-#define JOINREQ_NBTRIALS 3                      /**< Number of trials for the join request. */
-DeviceClass_t gCurrentClass = CLASS_A;                /* class definition*/
-lmh_confirm gCurrentConfirm = LMH_CONFIRMED_MSG;          /* confirm/unconfirm packet definition*/
-uint8_t gAppPort = LORAWAN_APP_PORT;                /* data port*/
+#define SCHED_QUEUE_SIZE 60										  /**< Maximum number of events in the scheduler queue. */
+#define LORAWAN_DATARATE DR_0									  /*LoRaMac datarates definition, from DR_0 to DR_5*/
+#define LORAWAN_TX_POWER TX_POWER_5								  /*LoRaMac tx power definition, from TX_POWER_0 to TX_POWER_15*/
+#define JOINREQ_NBTRIALS 3										  /**< Number of trials for the join request. */
+DeviceClass_t gCurrentClass = CLASS_A;							  /* class definition*/
+lmh_confirm gCurrentConfirm = LMH_CONFIRMED_MSG;				  /* confirm/unconfirm packet definition*/
+uint8_t gAppPort = LORAWAN_APP_PORT;							  /* data port*/
 
 /**@brief Structure containing LoRaWan parameters, needed for lmh_init()
  */
@@ -48,17 +48,19 @@ static void send_lora_frame(void);
 /**@brief Structure containing LoRaWan callback functions, needed for lmh_init()
 */
 static lmh_callback_t lora_callbacks = {BoardGetBatteryLevel, BoardGetUniqueId, BoardGetRandomSeed,
-                    lorawan_rx_handler, lorawan_has_joined_handler, lorawan_confirm_class_handler};
+										lorawan_rx_handler, lorawan_has_joined_handler, lorawan_confirm_class_handler};
 
 //OTAA keys !!!! KEYS ARE MSB !!!!
-uint8_t nodeDeviceEUI[8] = {0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x33, 0x33};
-uint8_t nodeAppEUI[8] = {0xB8, 0x27, 0xEB, 0xFF, 0xFE, 0x39, 0x00, 0x00}; //Oscar if Chisrpstack is used, fill with 0x00, 0x00, 0x00.....,no needed for autentication, TTN same for all nodes into the same application                                                                   
-uint8_t nodeAppKey[16] = {0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x33, 0x33};
+//OTAA keys !!!! KEYS ARE MSB !!!!
+uint8_t nodeDeviceEUI[8] = {FILL WITH YOUR KEY};
+uint8_t nodeAppEUI[8] = {FILL WITH YOUR KEY}; //Oscar if Chisrpstack is used, fill with 0x00, 0x00, 0x00.....,no needed for autentication, TTN same for all nodes into the same application                                                                   
+uint8_t nodeAppKey[16] = {FILL WITH YOUR KEY};
+
 
 // Private defination
-#define LORAWAN_APP_DATA_BUFF_SIZE 64                     /**< buffer size of the data to be transmitted. */
-#define LORAWAN_APP_INTERVAL 20000                        /**< Defines for user timer, the application data transmission interval. 20s, value in [ms]. */
-static uint8_t m_lora_app_data_buffer[LORAWAN_APP_DATA_BUFF_SIZE];        //< Lora user application data buffer.
+#define LORAWAN_APP_DATA_BUFF_SIZE 64										  /**< buffer size of the data to be transmitted. */
+#define LORAWAN_APP_INTERVAL 20000											  /**< Defines for user timer, the application data transmission interval. 20s, value in [ms]. */
+static uint8_t m_lora_app_data_buffer[LORAWAN_APP_DATA_BUFF_SIZE];			  //< Lora user application data buffer.
 static lmh_app_data_t m_lora_app_data = {m_lora_app_data_buffer, 0, 0, 0, 0}; //< Lora user application data structure.
 
 TimerEvent_t appTimer;
@@ -68,23 +70,23 @@ static uint32_t count_fail = 0;
 
 void setup()
 {
-  pinMode(LED_BLUE, OUTPUT);
-  digitalWrite(LED_BLUE, LOW);
+	pinMode(LED_BLUE, OUTPUT);
+	digitalWrite(LED_BLUE, LOW);
   pinMode(LED_GREEN, OUTPUT);
-  digitalWrite(LED_GREEN, LOW);
+	digitalWrite(LED_GREEN, LOW);
 
-  // Initialize LoRa chip.
-  lora_rak4630_init();
+	// Initialize LoRa chip.
+	lora_rak4630_init();
 
-  // Initialize Serial for debug output
-  Serial.begin(115200);
-  /* while (!Serial)
-  {
-    delay(10);
-  } */
-  Serial.println("=====================================");
-  Serial.println("Welcome to RAK4630 LoRaWan!!!");
-  Serial.println("Type: OTAA");
+	// Initialize Serial for debug output
+	Serial.begin(115200);
+	/* while (!Serial)
+	{
+		delay(10);
+	} */
+	Serial.println("=====================================");
+	Serial.println("Welcome to RAK4630 LoRaWan!!!");
+	Serial.println("Type: OTAA");
 
   #if defined(REGION_AS923)
     Serial.println("Region: AS923");
@@ -138,49 +140,49 @@ void setup()
   Serial.println();
 
   // Set the analog reference to 3.0V (default = 3.6V)
-  analogReference(AR_INTERNAL_3_0);
+	analogReference(AR_INTERNAL_3_0);
 
-  // Set the resolution to 12-bit (0..4096)
-  analogReadResolution(12); // Can be 8, 10, 12 or 14
+	// Set the resolution to 12-bit (0..4096)
+	analogReadResolution(12); // Can be 8, 10, 12 or 14
 
-  // Let the ADC settle
-  delay(1);
+	// Let the ADC settle
+	delay(1);
 
-  //creat a user timer to send data to server period
-  uint32_t err_code;
-  err_code = timers_init();
-  if (err_code != 0)
-  {
-    Serial.printf("timers_init failed - %d\n", err_code);
-  }
+	//creat a user timer to send data to server period
+	uint32_t err_code;
+	err_code = timers_init();
+	if (err_code != 0)
+	{
+		Serial.printf("timers_init failed - %d\n", err_code);
+	}
 
-  // Setup the EUIs and Keys
-  lmh_setDevEui(nodeDeviceEUI);
-  lmh_setAppEui(nodeAppEUI);
-  lmh_setAppKey(nodeAppKey);
+	// Setup the EUIs and Keys
+	lmh_setDevEui(nodeDeviceEUI);
+	lmh_setAppEui(nodeAppEUI);
+	lmh_setAppKey(nodeAppKey);
 
-  // Initialize LoRaWan
-  err_code = lmh_init(&lora_callbacks, lora_param_init, doOTAA);
-  if (err_code != 0)
-  {
-    Serial.printf("lmh_init failed - %d\n", err_code);
-  }
+	// Initialize LoRaWan
+	err_code = lmh_init(&lora_callbacks, lora_param_init, doOTAA);
+	if (err_code != 0)
+	{
+		Serial.printf("lmh_init failed - %d\n", err_code);
+	}
 
-  // Start Join procedure
-  lmh_join();
+	// Start Join procedure
+	lmh_join();
 }
 
 void loop()
 {
-  // Handle Radio events
-  Radio.IrqProcess();
+	// Handle Radio events
+	Radio.IrqProcess();
 }
 
 /**@brief LoRa function for handling HasJoined event.
  */
 void lorawan_has_joined_handler(void)
 {
-  Serial.println("OTAA Mode, Network Joined!");
+	Serial.println("OTAA Mode, Network Joined!");
   digitalWrite(LED_GREEN, HIGH);
   delay(500);
   digitalWrite(LED_GREEN, LOW);
@@ -193,13 +195,13 @@ void lorawan_has_joined_handler(void)
   delay(500);
   digitalWrite(LED_GREEN, LOW);
 
-  lmh_error_status ret = lmh_class_request(gCurrentClass);
-  if (ret == LMH_SUCCESS)
-  {
-    delay(1000);
-    TimerSetValue(&appTimer, LORAWAN_APP_INTERVAL);
-    TimerStart(&appTimer);
-  }
+	lmh_error_status ret = lmh_class_request(gCurrentClass);
+	if (ret == LMH_SUCCESS)
+	{
+		delay(1000);
+		TimerSetValue(&appTimer, LORAWAN_APP_INTERVAL);
+		TimerStart(&appTimer);
+	}
 }
 
 /**@brief Function for handling LoRaWan received data from Gateway
@@ -208,26 +210,26 @@ void lorawan_has_joined_handler(void)
  */
 void lorawan_rx_handler(lmh_app_data_t *app_data)
 {
-  Serial.printf("LoRa Packet received on port %d, size:%d, rssi:%d, snr:%d, data:%s\n",
-          app_data->port, app_data->buffsize, app_data->rssi, app_data->snr, app_data->buffer);
+	Serial.printf("LoRa Packet received on port %d, size:%d, rssi:%d, snr:%d, data:%s\n",
+				  app_data->port, app_data->buffsize, app_data->rssi, app_data->snr, app_data->buffer);
 }
 
 void lorawan_confirm_class_handler(DeviceClass_t Class)
 {
-  Serial.printf("switch to class %c done\n", "ABC"[Class]);
-  // Informs the server that switch has occurred ASAP
-  m_lora_app_data.buffsize = 0;
-  m_lora_app_data.port = gAppPort;
-  lmh_send(&m_lora_app_data, gCurrentConfirm);
+	Serial.printf("switch to class %c done\n", "ABC"[Class]);
+	// Informs the server that switch has occurred ASAP
+	m_lora_app_data.buffsize = 0;
+	m_lora_app_data.port = gAppPort;
+	lmh_send(&m_lora_app_data, gCurrentConfirm);
 }
 
 void send_lora_frame(void)
 {
-  if (lmh_join_status_get() != LMH_SET)
-  {
-    //Not joined, try again later
-    return;
-  }
+	if (lmh_join_status_get() != LMH_SET)
+	{
+		//Not joined, try again later
+		return;
+	}
 
   read_GPS_data();
   if(hasGPSdata && newpos)
@@ -271,10 +273,10 @@ void send_lora_frame(void)
  */
 void tx_lora_periodic_handler(void)
 {
-  TimerSetValue(&appTimer, LORAWAN_APP_INTERVAL);
-  TimerStart(&appTimer);
-  Serial.println("Preparing for send now...");
-  send_lora_frame();
+	TimerSetValue(&appTimer, LORAWAN_APP_INTERVAL);
+	TimerStart(&appTimer);
+	Serial.println("Preparing for send now...");
+	send_lora_frame();
 }
 
 /**@brief Function for the Timer initialization.
@@ -283,8 +285,8 @@ void tx_lora_periodic_handler(void)
  */
 uint32_t timers_init(void)
 {
-  TimerInit(&appTimer, tx_lora_periodic_handler);
-  return 0;
+	TimerInit(&appTimer, tx_lora_periodic_handler);
+	return 0;
 }
 
 void read_GPS_data()
