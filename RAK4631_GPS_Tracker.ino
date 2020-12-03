@@ -27,13 +27,13 @@ int32_t newlong = 0;
 
 bool doOTAA = true;
 #define SCHED_MAX_EVENT_DATA_SIZE APP_TIMER_SCHED_EVENT_DATA_SIZE /**< Maximum size of scheduler events. */
-#define SCHED_QUEUE_SIZE 60										  /**< Maximum number of events in the scheduler queue. */
-#define LORAWAN_DATARATE DR_0									  /*LoRaMac datarates definition, from DR_0 to DR_5*/
-#define LORAWAN_TX_POWER TX_POWER_5								  /*LoRaMac tx power definition, from TX_POWER_0 to TX_POWER_15*/
-#define JOINREQ_NBTRIALS 3										  /**< Number of trials for the join request. */
-DeviceClass_t gCurrentClass = CLASS_A;							  /* class definition*/
-lmh_confirm gCurrentConfirm = LMH_CONFIRMED_MSG;				  /* confirm/unconfirm packet definition*/
-uint8_t gAppPort = LORAWAN_APP_PORT;							  /* data port*/
+#define SCHED_QUEUE_SIZE 60	/**< Maximum number of events in the scheduler queue. */
+#define LORAWAN_DATARATE DR_0	/*LoRaMac datarates definition, from DR_0 to DR_5*/
+#define LORAWAN_TX_POWER TX_POWER_5	/*LoRaMac tx power definition, from TX_POWER_0 to TX_POWER_15*/
+#define JOINREQ_NBTRIALS 3	/**< Number of trials for the join request. */
+DeviceClass_t gCurrentClass = CLASS_A;	/* class definition*/
+lmh_confirm gCurrentConfirm = LMH_CONFIRMED_MSG;	/* confirm/unconfirm packet definition*/
+uint8_t gAppPort = LORAWAN_APP_PORT;	/* data port*/
 
 /**@brief Structure containing LoRaWan parameters, needed for lmh_init()
  */
@@ -58,9 +58,9 @@ uint8_t nodeAppKey[16] = {FILL WITH YOUR KEY};
 
 
 // Private defination
-#define LORAWAN_APP_DATA_BUFF_SIZE 64										  /**< buffer size of the data to be transmitted. */
-#define LORAWAN_APP_INTERVAL 20000											  /**< Defines for user timer, the application data transmission interval. 20s, value in [ms]. */
-static uint8_t m_lora_app_data_buffer[LORAWAN_APP_DATA_BUFF_SIZE];			  //< Lora user application data buffer.
+#define LORAWAN_APP_DATA_BUFF_SIZE 64	/**< buffer size of the data to be transmitted. */
+#define LORAWAN_APP_INTERVAL 20000	/**< Defines for user timer, the application data transmission interval. 20s, value in [ms]. */
+static uint8_t m_lora_app_data_buffer[LORAWAN_APP_DATA_BUFF_SIZE];	//< Lora user application data buffer.
 static lmh_app_data_t m_lora_app_data = {m_lora_app_data_buffer, 0, 0, 0, 0}; //< Lora user application data structure.
 
 TimerEvent_t appTimer;
@@ -298,10 +298,10 @@ void read_GPS_data()
   bat *= 10;  //Oscar to round to send battery value */
 
   float bat = analogRead(A0);
-  bat *= 1.67;    // we divided by 3/5 VBAT (0.6, or voltaje divider) so multiply back
-  bat *= 3;  // Multiply by 3V, our reference voltage
-  bat /= 4096; // convert to voltage
-  bat *= 10;
+  bat *= 1.67;	// we divided by 3/5 VBAT (0.6, or voltaje divider) so multiply back
+  bat *= 3;	// Multiply by 3V, our reference voltage
+  bat /= 4096;	// convert to voltage
+  bat *= 10;	//Oscar to round to send battery value
 
   // see if GPS has valid data
   uint8_t pos[64];
